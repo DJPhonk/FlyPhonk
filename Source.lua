@@ -38,17 +38,86 @@ FlyButton.TextScaled = true
 FlyButton.Parent = Frame
 
 -- Carregar o FlyScript
+local flying = false
+local bodyGyro, bodyVelocity
+local player = game.Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
+local hrp = char:WaitForChild("HumanoidRootPart")
+
+-- Função para ativar o voo
+local function activateFly()
+    -- Verifica se já está voando
+    if flying then return end
+    flying = true
+
+    -- Criação dos BodyGyro e BodyVelocity
+    bodyGyro = Instance.new("BodyGyro")
+    bodyGyro.P = 9e4
+    bodyGyro.MaxTorque = Vector3.new(400000, 400000, 400000)
+    bodyGyro.Parent = hrp
+
+    bodyVelocity = Instance.new("BodyVelocity")
+    bodyVelocity.MaxForce = Vector3.new(400000, 400000, 400000)
+    bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+    bodyVelocity.Parent = hrp
+
+    -- Loop para o movimento de voo
+    game:GetService("RunService").RenderStepped:Connect(function()
+        if flying then
+            local camCF = workspace.CurrentCamera.CFrame
+            local move = Vector3.new(0, 0, 0)
+
+            -- Movimentos baseados nas teclas pressionadas
+            if uis:IsKeyDown(Enum.KeyCode.W) then
+                move = move + (camCF.LookVector)
+            end
+            if uis:IsKeyDown(Enum.KeyCode.S) then
+                move = move - (camCF.LookVector)
+            end
+            if uis:IsKeyDown(Enum.KeyCode.A) then
+                move = move - (camCF.RightVector)
+            end
+            if uis:IsKeyDown(Enum.KeyCode.D) then
+                move = move + (camCF.RightVector)
+            end
+            if uis:IsKeyDown(Enum.KeyCode.Space) then
+                move = move + Vector3.new(0, 1, 0)
+            end
+            if uis:IsKeyDown(Enum.KeyCode.LeftControl) then
+                move = move - Vector3.new(0, 1, 0)
+            end
+
+            -- Atualiza a velocidade e a direção
+            bodyGyro.CFrame = camCF
+            bodyVelocity.Velocity = move.Unit * 100  -- A velocidade do voo
+        end
+    end)
+end
+
+-- Função para desativar o voo
+local function deactivateFly()
+    -- Verifica se não está voando
+    if not flying then return end
+    flying = false
+
+    -- Limpa o BodyGyro e BodyVelocity
+    if bodyGyro then bodyGyro:Destroy() end
+    if bodyVelocity then bodyVelocity:Destroy() end
+end
+
+-- Carregar o FlyScript original
 loadstring(game:HttpGet("https://raw.githubusercontent.com/RadeonScripts/Universal/refs/heads/main/FlyScript"))()
 
--- Lógica de ativar/desativar o voo com o botão
-local flying = false
-
+-- Controlar o botão da GUI
 FlyButton.MouseButton1Click:Connect(function()
-    flying = not flying
     if flying then
-        FlyButton.Text = "Desativar Fly"
-    else
+        -- Desativa o voo
         FlyButton.Text = "Ativar Fly"
+        deactivateFly()
+    else
+        -- Ativa o voo
+        FlyButton.Text = "Desativar Fly"
+        activateFly()
     end
 end)
 
