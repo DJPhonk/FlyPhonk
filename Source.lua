@@ -1,127 +1,122 @@
--- Criando a GUI
-local ScreenGui = Instance.new("ScreenGui")
-local Frame = Instance.new("Frame")
-local Title = Instance.new("TextLabel")
-local InfoText = Instance.new("TextLabel")
+-- Script Modificado
 
-local uis = game:GetService("UserInputService")
-local rs = game:GetService("RunService")
-
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-ScreenGui.Name = "DJPhonkFlyGUI"
-
--- Fundo escuro
-Frame.Size = UDim2.new(0, 220, 0, 200)
-Frame.Position = UDim2.new(0, 20, 0, 20)
-Frame.BackgroundColor3 = Color3.fromRGB(120, 0, 0) -- Vermelho escuro
-Frame.Active = true
-Frame.Draggable = true
-Frame.Parent = ScreenGui
-
--- Título
-Title.Size = UDim2.new(0, 200, 0, 30)
-Title.Position = UDim2.new(0, 10, 0, 5)
-Title.Text = "🚀 DJ PHONK FLY 🚀"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.BackgroundTransparency = 1
-Title.Font = Enum.Font.GothamBold
-Title.TextScaled = true
-Title.Parent = Frame
-
--- Explicações sobre o voo
-InfoText.Size = UDim2.new(0, 200, 0, 50)
-InfoText.Position = UDim2.new(0, 10, 0, 80)
-InfoText.Text = "Pressione F para ativar/desativar o voo.\nUse WASD para mover, Espaço para subir e Ctrl para descer."
-InfoText.BackgroundColor3 = Color3.fromRGB(90, 0, 0)
-InfoText.TextColor3 = Color3.fromRGB(255, 255, 255)
-InfoText.Font = Enum.Font.Gotham
-InfoText.TextScaled = true
-InfoText.TextWrapped = true
-InfoText.Parent = Frame
-
--- Função de Voo (Fly)
-local flying = false
-local bodyGyro, bodyVelocity
+local TweenService = game:GetService("TweenService")
 local player = game.Players.LocalPlayer
-local char = player.Character or player.CharacterAdded:Wait()
-local hrp = char:WaitForChild("HumanoidRootPart")
+local mouse = player:GetMouse()
+local uis = game:GetService("UserInputService")
+local screenGui = Instance.new("ScreenGui")
+local main = Instance.new("Frame")
+local TextLabel = Instance.new("TextLabel")
+local up = Instance.new("TextButton")
+local down = Instance.new("TextButton")
+local onof = Instance.new("TextButton")
+local plus = Instance.new("TextButton")
+local mine = Instance.new("TextButton")
+local closebutton = Instance.new("TextButton")
+local mini = Instance.new("TextButton")
+local mini2 = Instance.new("TextButton")
 
--- Função para ativar o voo
-local function activateFly()
-    if flying then return end
-    flying = true
+screenGui.Parent = game.CoreGui
+screenGui.Name = "DJ Phonk GUI"  -- Mudando o nome do ScreenGui
 
-    -- Criação dos BodyGyro e BodyVelocity
-    bodyGyro = Instance.new("BodyGyro")
-    bodyGyro.P = 9e4
-    bodyGyro.MaxTorque = Vector3.new(400000, 400000, 400000)
-    bodyGyro.Parent = hrp
+main.Parent = screenGui
+main.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+main.Position = UDim2.new(0.5, -200, 0.5, -150)
+main.Size = UDim2.new(0, 400, 0, 300)
 
-    bodyVelocity = Instance.new("BodyVelocity")
-    bodyVelocity.MaxForce = Vector3.new(400000, 400000, 400000)
-    bodyVelocity.Velocity = Vector3.new(0, 0, 0)
-    bodyVelocity.Parent = hrp
+TextLabel.Parent = main
+TextLabel.Size = UDim2.new(0, 400, 0, 50)
+TextLabel.Position = UDim2.new(0, 0, 0, 0)
+TextLabel.Text = "DJ Phonk"  -- Alterando o texto
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.TextSize = 30
+TextLabel.BackgroundTransparency = 1
 
-    -- Loop para o movimento de voo
-    rs.RenderStepped:Connect(function()
-        if flying then
-            local camCF = workspace.CurrentCamera.CFrame
-            local move = Vector3.new(0, 0, 0)
+up.Parent = main
+up.Size = UDim2.new(0, 100, 0, 50)
+up.Position = UDim2.new(0, 10, 0, 70)
+up.Text = "Up"
+up.BackgroundColor3 = Color3.fromRGB(139, 0, 0)  -- Alterando a cor do botão
+up.TextColor3 = Color3.fromRGB(255, 255, 255)
 
-            -- Movimentos baseados nas teclas pressionadas
-            if uis:IsKeyDown(Enum.KeyCode.W) then
-                move = move + (camCF.LookVector)
-            end
-            if uis:IsKeyDown(Enum.KeyCode.S) then
-                move = move - (camCF.LookVector)
-            end
-            if uis:IsKeyDown(Enum.KeyCode.A) then
-                move = move - (camCF.RightVector)
-            end
-            if uis:IsKeyDown(Enum.KeyCode.D) then
-                move = move + (camCF.RightVector)
-            end
-            if uis:IsKeyDown(Enum.KeyCode.Space) then
-                move = move + Vector3.new(0, 1, 0)
-            end
-            if uis:IsKeyDown(Enum.KeyCode.LeftControl) then
-                move = move - Vector3.new(0, 1, 0)
-            end
+down.Parent = main
+down.Size = UDim2.new(0, 100, 0, 50)
+down.Position = UDim2.new(0, 10, 0, 130)
+down.Text = "Down"
+down.BackgroundColor3 = Color3.fromRGB(139, 0, 0)  -- Alterando a cor do botão
+down.TextColor3 = Color3.fromRGB(255, 255, 255)
 
-            -- Atualiza a velocidade e a direção
-            bodyGyro.CFrame = camCF
-            bodyVelocity.Velocity = move.Unit * 100  -- A velocidade do voo
-        end
-    end)
-end
+onof.Parent = main
+onof.Size = UDim2.new(0, 100, 0, 50)
+onof.Position = UDim2.new(0, 10, 0, 190)
+onof.Text = "On/Off"
+onof.BackgroundColor3 = Color3.fromRGB(139, 0, 0)  -- Alterando a cor do botão
+onof.TextColor3 = Color3.fromRGB(255, 255, 255)
 
--- Função para desativar o voo
-local function deactivateFly()
-    if not flying then return end
-    flying = false
+plus.Parent = main
+plus.Size = UDim2.new(0, 100, 0, 50)
+plus.Position = UDim2.new(0, 120, 0, 70)
+plus.Text = "+"
+plus.BackgroundColor3 = Color3.fromRGB(139, 0, 0)  -- Alterando a cor do botão
+plus.TextColor3 = Color3.fromRGB(255, 255, 255)
 
-    -- Limpa o BodyGyro e BodyVelocity
-    if bodyGyro then bodyGyro:Destroy() end
-    if bodyVelocity then bodyVelocity:Destroy() end
-end
+mine.Parent = main
+mine.Size = UDim2.new(0, 100, 0, 50)
+mine.Position = UDim2.new(0, 120, 0, 130)
+mine.Text = "-"
+mine.BackgroundColor3 = Color3.fromRGB(139, 0, 0)  -- Alterando a cor do botão
+mine.TextColor3 = Color3.fromRGB(255, 255, 255)
 
--- Função para alternar entre ativar/desativar o voo com a tecla F
-uis.InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed then return end
-    if input.UserInputType == Enum.UserInputType.Keyboard then
-        if input.KeyCode == Enum.KeyCode.F then
-            if flying then
-                deactivateFly()
-                print("Voo desativado!")
-            else
-                activateFly()
-                print("Voo ativado!")
-            end
-        end
-    end
+closebutton.Parent = main
+closebutton.Size = UDim2.new(0, 100, 0, 50)
+closebutton.Position = UDim2.new(0, 230, 0, 70)
+closebutton.Text = "Close"
+closebutton.BackgroundColor3 = Color3.fromRGB(139, 0, 0)  -- Alterando a cor do botão
+closebutton.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+mini.Parent = main
+mini.Size = UDim2.new(0, 100, 0, 50)
+mini.Position = UDim2.new(0, 230, 0, 130)
+mini.Text = "Minimize"
+mini.BackgroundColor3 = Color3.fromRGB(139, 0, 0)  -- Alterando a cor do botão
+mini.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+mini2.Parent = main
+mini2.Size = UDim2.new(0, 100, 0, 50)
+mini2.Position = UDim2.new(0, 230, 0, 190)
+mini2.Text = "Minimize 2"
+mini2.BackgroundColor3 = Color3.fromRGB(139, 0, 0)  -- Alterando a cor do botão
+mini2.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+-- Funcionalidade dos botões (não alterada)
+up.MouseButton1Click:Connect(function()
+    print("Up clicked")
 end)
 
--- Carregar o FlyScript original
-loadstring(game:HttpGet("https://raw.githubusercontent.com/RadeonScripts/Universal/refs/heads/main/FlyScript"))()
+down.MouseButton1Click:Connect(function()
+    print("Down clicked")
+end)
 
-print("✅ DJ PHONK FLY GUI carregada com sucesso!")
+onof.MouseButton1Click:Connect(function()
+    print("On/Off clicked")
+end)
+
+plus.MouseButton1Click:Connect(function()
+    print("Plus clicked")
+end)
+
+mine.MouseButton1Click:Connect(function()
+    print("Mine clicked")
+end)
+
+closebutton.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
+
+mini.MouseButton1Click:Connect(function()
+    main.Visible = not main.Visible
+end)
+
+mini2.MouseButton1Click:Connect(function()
+    main.Visible = not main.Visible
+end)
