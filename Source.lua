@@ -83,12 +83,11 @@ local function fly()
     local hrp = char:WaitForChild("HumanoidRootPart")
     
     bodyGyro = Instance.new("BodyGyro")
-    bodyGyro.P = 9e4
-    bodyGyro.Parent = hrp
+    bodyGyro.P = 10000  -- Menor força para evitar movimentos indesejados
     bodyGyro.MaxTorque = Vector3.new(400000, 400000, 400000)
+    bodyGyro.Parent = hrp
 
     bodyVelocity = Instance.new("BodyVelocity")
-    bodyVelocity.Velocity = Vector3.new(0,0,0)
     bodyVelocity.MaxForce = Vector3.new(400000, 400000, 400000)
     bodyVelocity.Parent = hrp
 
@@ -96,25 +95,30 @@ local function fly()
         if flying then
             local camCF = workspace.CurrentCamera.CFrame
             local move = Vector3.new(0, 0, 0)
+
+            -- Movimentação
             if uis:IsKeyDown(Enum.KeyCode.W) then
-                move = move + (camCF.LookVector)
+                move = move + camCF.LookVector
             end
             if uis:IsKeyDown(Enum.KeyCode.S) then
-                move = move - (camCF.LookVector)
+                move = move - camCF.LookVector
             end
             if uis:IsKeyDown(Enum.KeyCode.A) then
-                move = move - (camCF.RightVector)
+                move = move - camCF.RightVector
             end
             if uis:IsKeyDown(Enum.KeyCode.D) then
-                move = move + (camCF.RightVector)
-            end
-            if uis:IsKeyDown(Enum.KeyCode.Space) then
-                move = move + Vector3.new(0, 1, 0)
-            end
-            if uis:IsKeyDown(Enum.KeyCode.LeftControl) then
-                move = move - Vector3.new(0, 1, 0)
+                move = move + camCF.RightVector
             end
 
+            -- Controle de Altura (subir/descer)
+            if uis:IsKeyDown(Enum.KeyCode.Space) then
+                move = move + Vector3.new(0, 1, 0)  -- Sobe
+            end
+            if uis:IsKeyDown(Enum.KeyCode.LeftControl) then
+                move = move - Vector3.new(0, 1, 0)  -- Desce
+            end
+
+            -- Aplicar movimento
             bodyGyro.CFrame = camCF
             bodyVelocity.Velocity = move.Unit * speed
         end
