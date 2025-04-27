@@ -1,4 +1,4 @@
--- DJ PHONK FLY GUI - Corrigido Voo Normal
+-- GUI Melhorada 2.0 + Fly Suave by DJ Phonk
 
 local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
@@ -17,7 +17,7 @@ ScreenGui.Name = "DJPhonkFlyGUI"
 -- Fundo escuro
 Frame.Size = UDim2.new(0, 220, 0, 200)
 Frame.Position = UDim2.new(0, 20, 0, 20)
-Frame.BackgroundColor3 = Color3.fromRGB(120, 0, 0)
+Frame.BackgroundColor3 = Color3.fromRGB(120, 0, 0) -- Vermelho escuro
 Frame.Active = true
 Frame.Draggable = true
 Frame.Parent = ScreenGui
@@ -36,7 +36,7 @@ Title.Parent = Frame
 FlyButton.Size = UDim2.new(0, 200, 0, 40)
 FlyButton.Position = UDim2.new(0, 10, 0, 40)
 FlyButton.Text = "Ativar Fly"
-FlyButton.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+FlyButton.BackgroundColor3 = Color3.fromRGB(170, 0, 0) -- Combina melhor
 FlyButton.TextColor3 = Color3.fromRGB(255,255,255)
 FlyButton.Font = Enum.Font.GothamBold
 FlyButton.TextScaled = true
@@ -72,11 +72,10 @@ DecreaseSpeed.Font = Enum.Font.GothamBold
 DecreaseSpeed.TextScaled = true
 DecreaseSpeed.Parent = Frame
 
--- Sistema de Fly Corrigido
+-- Fly System Melhorado
 local flying = false
 local speed = 100
 local bodyGyro, bodyVelocity
-local con
 
 local function fly()
     local player = game.Players.LocalPlayer
@@ -93,29 +92,30 @@ local function fly()
     bodyVelocity.MaxForce = Vector3.new(400000, 400000, 400000)
     bodyVelocity.Parent = hrp
 
-    con = rs.Heartbeat:Connect(function()
+    rs.RenderStepped:Connect(function()
         if flying then
+            local camCF = workspace.CurrentCamera.CFrame
             local move = Vector3.new(0, 0, 0)
             if uis:IsKeyDown(Enum.KeyCode.W) then
-                move = move + Vector3.new(0, 0, -1)
+                move = move + (camCF.LookVector)
             end
             if uis:IsKeyDown(Enum.KeyCode.S) then
-                move = move + Vector3.new(0, 0, 1)
+                move = move - (camCF.LookVector)
             end
             if uis:IsKeyDown(Enum.KeyCode.A) then
-                move = move + Vector3.new(-1, 0, 0)
+                move = move - (camCF.RightVector)
             end
             if uis:IsKeyDown(Enum.KeyCode.D) then
-                move = move + Vector3.new(1, 0, 0)
+                move = move + (camCF.RightVector)
             end
             if uis:IsKeyDown(Enum.KeyCode.Space) then
                 move = move + Vector3.new(0, 1, 0)
             end
             if uis:IsKeyDown(Enum.KeyCode.LeftControl) then
-                move = move + Vector3.new(0, -1, 0)
+                move = move - Vector3.new(0, 1, 0)
             end
 
-            bodyGyro.CFrame = hrp.CFrame
+            bodyGyro.CFrame = camCF
             bodyVelocity.Velocity = move.Unit * speed
         end
     end)
@@ -130,7 +130,6 @@ FlyButton.MouseButton1Click:Connect(function()
         FlyButton.Text = "Ativar Fly"
         if bodyGyro then bodyGyro:Destroy() end
         if bodyVelocity then bodyVelocity:Destroy() end
-        if con then con:Disconnect() end
     end
 end)
 
@@ -144,4 +143,4 @@ DecreaseSpeed.MouseButton1Click:Connect(function()
     SpeedLabel.Text = "Velocidade: "..speed
 end)
 
-print("✅ DJ PHONK FLY GUI Corrigido - Sem voo invertido!")
+print("✅ DJ PHONK FLY GUI - Melhorado com Fundo Escuro!")
