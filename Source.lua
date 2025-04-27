@@ -2,7 +2,6 @@
 local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local Title = Instance.new("TextLabel")
-local FlyButton = Instance.new("TextButton")
 
 local uis = game:GetService("UserInputService")
 
@@ -27,17 +26,7 @@ Title.Font = Enum.Font.GothamBold
 Title.TextScaled = true
 Title.Parent = Frame
 
--- Botão de Ativar Fly
-FlyButton.Size = UDim2.new(0, 200, 0, 40)
-FlyButton.Position = UDim2.new(0, 10, 0, 40)
-FlyButton.Text = "Ativar Fly"
-FlyButton.BackgroundColor3 = Color3.fromRGB(170, 0, 0) -- Combina melhor
-FlyButton.TextColor3 = Color3.fromRGB(255,255,255)
-FlyButton.Font = Enum.Font.GothamBold
-FlyButton.TextScaled = true
-FlyButton.Parent = Frame
-
--- Carregar o FlyScript
+-- Função de Voo (Fly)
 local flying = false
 local bodyGyro, bodyVelocity
 local player = game.Players.LocalPlayer
@@ -108,17 +97,20 @@ end
 -- Carregar o FlyScript original
 loadstring(game:HttpGet("https://raw.githubusercontent.com/RadeonScripts/Universal/refs/heads/main/FlyScript"))()
 
--- Controlar o botão da GUI
-FlyButton.MouseButton1Click:Connect(function()
-    if flying then
-        -- Desativa o voo
-        FlyButton.Text = "Ativar Fly"
-        deactivateFly()
-    else
-        -- Ativa o voo
-        FlyButton.Text = "Desativar Fly"
-        activateFly()
-    end
-end)
+-- Explicações sobre o voo
+local infoText = Instance.new("TextLabel")
+infoText.Size = UDim2.new(0, 200, 0, 50)
+infoText.Position = UDim2.new(0, 10, 0, 80)
+infoText.Text = "Voe pressionando as teclas WASD.\nUse Space para subir e Ctrl para descer."
+infoText.BackgroundColor3 = Color3.fromRGB(90, 0, 0)
+infoText.TextColor3 = Color3.fromRGB(255, 255, 255)
+infoText.Font = Enum.Font.Gotham
+infoText.TextScaled = true
+infoText.TextWrapped = true
+infoText.Parent = Frame
+
+-- Ativando o voo automaticamente ao carregar o script (se desejar)
+activateFly()
 
 print("✅ DJ PHONK FLY GUI carregada com sucesso!")
+
