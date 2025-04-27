@@ -2,8 +2,10 @@
 local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local Title = Instance.new("TextLabel")
+local InfoText = Instance.new("TextLabel")
 
 local uis = game:GetService("UserInputService")
+local rs = game:GetService("RunService")
 
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 ScreenGui.Name = "DJPhonkFlyGUI"
@@ -26,6 +28,17 @@ Title.Font = Enum.Font.GothamBold
 Title.TextScaled = true
 Title.Parent = Frame
 
+-- Explicações sobre o voo
+InfoText.Size = UDim2.new(0, 200, 0, 50)
+InfoText.Position = UDim2.new(0, 10, 0, 80)
+InfoText.Text = "Pressione F para ativar/desativar o voo.\nUse WASD para mover, Espaço para subir e Ctrl para descer."
+InfoText.BackgroundColor3 = Color3.fromRGB(90, 0, 0)
+InfoText.TextColor3 = Color3.fromRGB(255, 255, 255)
+InfoText.Font = Enum.Font.Gotham
+InfoText.TextScaled = true
+InfoText.TextWrapped = true
+InfoText.Parent = Frame
+
 -- Função de Voo (Fly)
 local flying = false
 local bodyGyro, bodyVelocity
@@ -35,7 +48,6 @@ local hrp = char:WaitForChild("HumanoidRootPart")
 
 -- Função para ativar o voo
 local function activateFly()
-    -- Verifica se já está voando
     if flying then return end
     flying = true
 
@@ -51,7 +63,7 @@ local function activateFly()
     bodyVelocity.Parent = hrp
 
     -- Loop para o movimento de voo
-    game:GetService("RunService").RenderStepped:Connect(function()
+    rs.RenderStepped:Connect(function()
         if flying then
             local camCF = workspace.CurrentCamera.CFrame
             local move = Vector3.new(0, 0, 0)
@@ -85,7 +97,6 @@ end
 
 -- Função para desativar o voo
 local function deactivateFly()
-    -- Verifica se não está voando
     if not flying then return end
     flying = false
 
@@ -94,23 +105,23 @@ local function deactivateFly()
     if bodyVelocity then bodyVelocity:Destroy() end
 end
 
+-- Função para alternar entre ativar/desativar o voo com a tecla F
+uis.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.UserInputType == Enum.UserInputType.Keyboard then
+        if input.KeyCode == Enum.KeyCode.F then
+            if flying then
+                deactivateFly()
+                print("Voo desativado!")
+            else
+                activateFly()
+                print("Voo ativado!")
+            end
+        end
+    end
+end)
+
 -- Carregar o FlyScript original
 loadstring(game:HttpGet("https://raw.githubusercontent.com/RadeonScripts/Universal/refs/heads/main/FlyScript"))()
 
--- Explicações sobre o voo
-local infoText = Instance.new("TextLabel")
-infoText.Size = UDim2.new(0, 200, 0, 50)
-infoText.Position = UDim2.new(0, 10, 0, 80)
-infoText.Text = "Voe pressionando as teclas WASD.\nUse Space para subir e Ctrl para descer."
-infoText.BackgroundColor3 = Color3.fromRGB(90, 0, 0)
-infoText.TextColor3 = Color3.fromRGB(255, 255, 255)
-infoText.Font = Enum.Font.Gotham
-infoText.TextScaled = true
-infoText.TextWrapped = true
-infoText.Parent = Frame
-
--- Ativando o voo automaticamente ao carregar o script (se desejar)
-activateFly()
-
 print("✅ DJ PHONK FLY GUI carregada com sucesso!")
-
