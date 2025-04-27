@@ -12,7 +12,12 @@ local uis = game:GetService("UserInputService")
 local rs = game:GetService("RunService")
 local player = game.Players.LocalPlayer
 
+local flying = false
+local speed = 100
+local bodyGyro, bodyVelocity
+
 local function createGUI()
+    -- Cria a GUI
     ScreenGui = Instance.new("ScreenGui")
     Frame = Instance.new("Frame")
     Title = Instance.new("TextLabel")
@@ -85,19 +90,17 @@ local function createGUI()
 end
 
 -- Fly System Melhorado
-local flying = false
-local speed = 100
-local bodyGyro, bodyVelocity
-
 local function fly()
     local char = player.Character or player.CharacterAdded:Wait()
     local hrp = char:WaitForChild("HumanoidRootPart")
     
+    -- Criar BodyGyro para controle de orientação
     bodyGyro = Instance.new("BodyGyro")
-    bodyGyro.P = 10000  -- Menor força para evitar movimentos indesejados
+    bodyGyro.P = 10000  -- Ajuste para evitar movimento excessivo
     bodyGyro.MaxTorque = Vector3.new(400000, 400000, 400000)
     bodyGyro.Parent = hrp
 
+    -- Criar BodyVelocity para controle de movimento
     bodyVelocity = Instance.new("BodyVelocity")
     bodyVelocity.MaxForce = Vector3.new(400000, 400000, 400000)
     bodyVelocity.Parent = hrp
@@ -107,7 +110,7 @@ local function fly()
             local camCF = workspace.CurrentCamera.CFrame
             local move = Vector3.new(0, 0, 0)
 
-            -- Movimentação
+            -- Movimentação no plano horizontal
             if uis:IsKeyDown(Enum.KeyCode.W) then
                 move = move + camCF.LookVector
             end
@@ -121,15 +124,15 @@ local function fly()
                 move = move + camCF.RightVector
             end
 
-            -- Controle de Altura (subir/descer)
+            -- Controle de altura (movimento no eixo Y)
             if uis:IsKeyDown(Enum.KeyCode.Space) then
-                move = move + Vector3.new(0, 1, 0)  -- Sobe
+                move = move + Vector3.new(0, 1, 0)  -- Subir
             end
             if uis:IsKeyDown(Enum.KeyCode.LeftControl) then
-                move = move - Vector3.new(0, 1, 0)  -- Desce
+                move = move - Vector3.new(0, 1, 0)  -- Descer
             end
 
-            -- Aplicar movimento
+            -- Atualizar o BodyGyro e BodyVelocity
             bodyGyro.CFrame = camCF
             bodyVelocity.Velocity = move.Unit * speed
         end
@@ -160,7 +163,11 @@ end)
 
 -- Garantir que o GUI seja recriado após a morte
 player.CharacterAdded:Connect(function()
-    createGUI() -- Recria a GUI toda vez que o jogador renasce
+    -- Recriar o GUI e garantir que o fly também seja ativado se necessário
+    if ScreenGui then
+        ScreenGui:Destroy()
+    end
+    createGUI()
 end)
 
 createGUI() -- Cria a GUI pela primeira vez
