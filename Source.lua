@@ -16,6 +16,7 @@ local flying = false
 local speed = 100
 local bodyGyro, bodyVelocity
 
+-- Função para criar GUI
 local function createGUI()
     -- Cria a GUI
     ScreenGui = Instance.new("ScreenGui")
@@ -131,6 +132,9 @@ local function fly()
             if uis:IsKeyDown(Enum.KeyCode.LeftControl) then
                 move = move - Vector3.new(0, 1, 0)  -- Descer
             end
+
+            -- Garantir que a velocidade no eixo Y não vá para valores negativos excessivos (evitar afundamento)
+            move = Vector3.new(move.X, math.clamp(move.Y, -1, 1), move.Z) -- Limita o eixo Y para não ultrapassar limites
 
             -- Atualizar o BodyGyro e BodyVelocity
             bodyGyro.CFrame = camCF
