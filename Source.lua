@@ -138,7 +138,7 @@ nowe = false
 game:GetService("StarterGui"):SetCore("SendNotification", { 
 	Title = "DJ Phonk FLY";
 	Text = "BY DJ Phonk";
-	Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"})
+	Icon = "https://create.roblox.com/store/asset/106808374231896/djphonk"})
 Duration = 5;
 
 Frame.Active = true -- main = gui
