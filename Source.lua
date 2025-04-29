@@ -136,10 +136,11 @@ local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
 nowe = false
 
 game:GetService("StarterGui"):SetCore("SendNotification", { 
-	Title = "DJ Phonk FLY";
-	Text = "BY DJ Phonk";
-	Icon = "https://create.roblox.com/store/asset/106808374231896/djphonk"})
-Duration = 5;
+    Title = "DJ Phonk FLY";
+    Text = "BY DJ Phonk";
+    Icon = "rbxthumb://type=Asset&id=106808374231896&w=150&h=150";
+    Duration = 5;
+})
 
 Frame.Active = true -- main = gui
 Frame.Draggable = true
